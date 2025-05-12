@@ -921,7 +921,7 @@ for dataset_name in ['cora', 'citeseer']:
             results = []
             for sigma in noise_levels:
                 data = method(pred_data, sigma)
-
+                data.to(device)
                 true_features, train_fts_ratio = train_LFI(data, diag_fts)
 
                 # pickle.dump(true_features, open(os.path.join(os.getcwd(), 'features', method_name,
