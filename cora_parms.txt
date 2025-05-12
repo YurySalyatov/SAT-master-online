@@ -1,0 +1,14 @@
+topK_list = [10, 20, 50].
+args.dataset='cora'.
+args.epoches=1000.
+args.lr=0.005.
+args.enc_name='GCN' or 'GAT' # choose the encoder for NANG.
+args.alpha=0.2.
+args.dropout=0.5.
+args.patience=100.
+args.neg_times=1.
+args.n_gene=2 # G step.
+args.n_disc=1 # D step.
+args.lambda_recon=1.0 # for self stream
+args.lambda_cross=10.0 # for cross stream.
+args.lambda_gan=1.0 # this parameter is always 1.0, you can ignore it.
