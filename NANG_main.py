@@ -934,6 +934,7 @@ for dataset_name in ['cora', 'citeseer']:
                 new_gene_fts = pickle.load(open(f'features/LFI/gene_fts_train_ratio_{dataset_name}_0.4_G1.0_R1.0_C10.0.pkl', 'rb'))
                 labels = node_class_lbls
                 data.x = torch.FloatTensor(new_gene_fts)
+                data.to(device)
                 model = train_model(model, data, dataset_name)
                 model.load_state_dict(torch.load(f"output/best_GCN_model_{dataset_name}.pkl"))
                 num_samples = 100
