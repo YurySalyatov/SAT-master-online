@@ -930,6 +930,7 @@ for dataset_name in ['cora', 'citeseer']:
                 # print('method: {}, dataset: {}, ratio: {}'.format(method_name, dataset_name, train_fts_ratio))
 
                 model = GCN(num_features, num_classes, layer_name=layer_name)
+                model.to(device)
                 new_gene_fts = pickle.load(open(f'features/LFI/gene_fts_train_ratio_{dataset_name}_0.4_G1.0_R1.0_C10.0.pkl', 'rb'))
                 labels = node_class_lbls
                 data.x = torch.FloatTensor(new_gene_fts)
