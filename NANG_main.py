@@ -101,7 +101,7 @@ def fts_loss_continuous(recon_x=None, x=None, pos_weight_tensor=None, neg_weight
 
 
 def save_generative_fts(gene_fts, dataset_name):
-    print(gene_fts[:20, :20])
+    # print(gene_fts[:20, :20])
     if args.dataset in ['cora', 'citeseer', 'steam']:
         output_fts = 1.0 / (1.0 + np.exp(-gene_fts))
     elif args.dataset in ['pubmed']:
@@ -365,7 +365,7 @@ class Data:
 def train_LFI(data, diag_fts):
     norm_adj = data.edge_index
     true_features = data.x
-    print(true_features[:20, :20])
+    # print(true_features[:20, :20])
     model = LFI(n_nodes=norm_adj.shape[0], n_fts=true_features.shape[1], n_hid=args.hidden, dropout=args.dropout,
                 args=args)
     if args.cuda:
