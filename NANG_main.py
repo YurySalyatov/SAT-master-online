@@ -290,7 +290,7 @@ def save_table(results, filename="results_experiment1_table.txt"):
 #         plt.show()
 
 # Обучение модели
-def train_model(model, data, dataset_name, epochs=500):
+def train_model(model, data, dataset_name, layer, epochs=10000, target_acc=0.8):
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=5e-4)
     model.train()
     loss_f = torch.nn.CrossEntropyLoss()
@@ -301,19 +301,20 @@ def train_model(model, data, dataset_name, epochs=500):
         out = model(data)
         loss = loss_f(out[data.train_idx], data.y[data.train_idx])
         pred = out.argmax(dim=1)
-        acc = (pred[data.val_idx] == data.y[data.val_idx]).sum() / data.val_idx.shape[0]
-        if max_acc < acc:
-            max_acc = acc
-            min_loss = loss.item()
-            torch.save(model.state_dict(), f"output/best_GCN_model_{dataset_name}.pkl")
+        val_acc = (pred[data.val_idx] == data.y[data.val_idx]).sum() / data.val_idx.shape[0]
+        if max_acc < val_acc:
+            torch.save(model.state_dict(), f"output/best_GCN_model_{dataset_name}_{layer}.pkl")
+            min_loss = min(min_loss, loss)
+            max_acc = val_acc
+            if target_acc <= max_acc:
+                break
         # if epoch % 100 == 0:
         # print(f"loss: {loss.item():.4f}, epoch: {epoch + 1}")
         loss.backward()
         optimizer.step()
     print(f"min loss: {min_loss:.4f}")
     print(f"max_acc: {max_acc}")
-    return model
-
+    return model, max_acc, min_loss
 
 # Вычисление энтропии
 def compute_entropy(log_probs):
