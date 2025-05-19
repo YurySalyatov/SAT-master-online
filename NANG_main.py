@@ -930,8 +930,17 @@ for dataset_name in datasets:
                 for _ in range(10):
                     data = method(pred_data, sigma)
                     data.to(device)
+
+                    true_features, train_fts_ratio = train_LFI(data, diag_fts)
+
                     model = GCN(num_features, num_classes, layer_name=layer)
                     model.to(device)
+
+                    new_gene_fts = pickle.load(
+                        open(f'features/LFI/gene_fts_train_ratio_{dataset_name}_0.4_G1.0_R1.0_C10.0.pkl', 'rb'))
+                    labels = node_class_lbls
+                    data.x = torch.FloatTensor(new_gene_fts, device=device)
+
                     model, max_acc, _ = train_model(model, data, dataset_name, layer=layer)
                     model.load_state_dict(torch.load(f"output/best_GCN_model_{dataset_name}_{layer}.pkl"))
 
