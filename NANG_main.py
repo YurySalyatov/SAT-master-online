@@ -929,6 +929,7 @@ for dataset_name in datasets:
                 acc_arr = []
                 for _ in range(10):
                     data = method(pred_data, sigma)
+                    data.to(device)
                     model = GCN(num_features, num_classes, layer_name=layer)
                     model.to(device)
                     model, max_acc, _ = train_model(model, data, dataset_name, layer=layer)
