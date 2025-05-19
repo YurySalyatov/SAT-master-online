@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="789722af-f387-463a-82d0-9d67ba1bd174" name="Default Changelist" comment="" />
+    <list default="true" id="789722af-f387-463a-82d0-9d67ba1bd174" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NANG_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/NANG_main.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -56,6 +59,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
     "last_opened_file_path": "C:/Users/yurys/y2024-2025/Работа/SAT-master-online",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -121,7 +125,9 @@
       <workItem from="1746569790987" duration="2338000" />
       <workItem from="1747030615360" duration="6488000" />
       <workItem from="1747044715461" duration="94000" />
-      <workItem from="1747044904358" duration="5335000" />
+      <workItem from="1747044904358" duration="6166000" />
+      <workItem from="1747232234355" duration="1859000" />
+      <workItem from="1747332001338" duration="648000" />
     </task>
     <servers />
   </component>

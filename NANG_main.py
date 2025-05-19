@@ -915,54 +915,57 @@ for dataset_name in ['cora', 'citeseer']:
     pred_data = Data(true_features, adj, node_class_lbls, train_fts_idx, vali_fts_idx, test_fts_idx)
 
     os.makedirs(f"results/{dataset_name}", exist_ok=True)
-    for method in methods:
-        tables_dir = f"results/{dataset_name}/{method.__name__}"
-        os.makedirs(tables_dir, exist_ok=True)
+    pred_data, num_features, num_classes = get_data(dataset_name)
+    for method in noisy_methods:
         print(method.__name__)
-        for layer_name in layers:
-            results = []
-            for sigma in noise_levels:
-                data = method(pred_data, sigma)
-                data.to(device)
-                true_features, train_fts_ratio = train_LFI(data, diag_fts)
+        results = []
+        for sigma in noise_levels:
+            one_result = {"sigma": sigma}
+            for layer in layers:
+                print(layer)
+                pu_arr = []
+                acc_arr = []
+                for _ in range(10):
+                    data = method(pred_data, sigma)
+                    model = GCN(num_features, num_classes, layer_name=layer)
+                    model.to(device)
+                    model, max_acc, _ = train_model(model, data, dataset_name, layer=layer)
+                    model.load_state_dict(torch.load(f"output/best_GCN_model_{dataset_name}_{layer}.pkl"))
 
-                # pickle.dump(true_features, open(os.path.join(os.getcwd(), 'features', method_name,
-                #                                              '{}_true_features_{}.pkl'.format(dataset_name, sigma)),
-                #                                 'wb'))
-                # print('method: {}, dataset: {}, ratio: {}'.format(method_name, dataset_name, train_fts_ratio))
+                    # Оценка PU
+                    num_samples = 20
+                    predictions = []
+                    model.train()
+                    for _ in range(num_samples):
+                        with torch.no_grad():
+                            log_probs = model(data)
+                            predictions.append(torch.exp(log_probs[data.test_idx]))
 
-                model = GCN(num_features, num_classes, layer_name=layer_name)
-                model.to(device)
-                new_gene_fts = pickle.load(open(f'features/LFI/gene_fts_train_ratio_{dataset_name}_0.4_G1.0_R1.0_C10.0.pkl', 'rb'))
-                labels = node_class_lbls
-                data.x = torch.FloatTensor(new_gene_fts)
-                data.to(device)
-                model = train_model(model, data, dataset_name)
-                model.load_state_dict(torch.load(f"output/best_GCN_model_{dataset_name}.pkl"))
-                num_samples = 100
-                predictions = []
-                entropy = []
-                var_pred = []
-                model.train()
-                for _ in range(num_samples):
-                    with torch.no_grad():
-                        log_probs = model(data)
-                        predictions.append(torch.exp(log_probs))
-                        entropy.append(compute_entropy(log_probs))
+                    predictions = torch.stack(predictions)
+                    mean_pred = predictions.mean(dim=0)
+                    mean_pred_entropy = -torch.sum(mean_pred * torch.log(mean_pred + 1e-18), dim=1)
+                    pu = mean_pred_entropy.mean()
+                    pu_arr.append(pu)
+                    acc_arr.append(max_acc)
+                pu_arr = torch.stack(pu_arr)
+                acc_arr = torch.stack(acc_arr)
+                mean_pu = pu_arr.mean().item()
+                var_pu = pu_arr.var().item()
+                one_result[f"{layer} PU"] = mean_pu
+                one_result[f"{layer} var PU"] = var_pu
+                one_result[f"{layer} max acc"] = acc_arr.max().item()
+                one_result[f"{layer} min acc"] = acc_arr.min().item()
+                one_result[f"{layer} mean acc"] = acc_arr.mean().item()
+                one_result[f"{layer} var acc"] = acc_arr.var().item()
+            print(one_result)
+            results.append(one_result)
+        # plot_dir = f"results/{dataset_name}/{method.__name__}/plots"
+        # os.makedirs(plot_dir, exist_ok=True)
+        table_file = f"results/{dataset_name}/{method.__name__}/table_experiment2.txt"
+        os.makedirs(f"results/{dataset_name}/{method.__name__}", exist_ok=True)
 
-                predictions = torch.stack(predictions)
-                entropy = torch.stack(entropy)
-                mean_pred = predictions.mean(dim=0)
-                mean_pred_entropy = -torch.sum(mean_pred * torch.log(mean_pred), dim=1)
-                mean_entropy_pred = entropy.mean(dim=0)
-                d_au = mean_entropy_pred.mean().item()
-                d_pu = mean_pred_entropy.mean().item()
-                mu = d_pu - d_au
-                results.append(
-                    {'sigma': sigma, "Dropout PU": d_pu, 'Dropout AU': d_au, "Dropout MU": mu})
-                print(f"noisy: {sigma}, layer name: {layer_name}")
-                print(f"Dropout PU: {d_pu:.4f}, Dropout AU: {d_au:.4f}, Dropout MU: {mu:.4f}")
-            save_table(results, tables_dir + f"/{layer_name}_experiment2.txt")
+        # plot_all_results(results, save_path=plot_dir)
+        save_table(results, filename=table_file)
 
 # for sigma in noise_levels:
 #     # note that the node_class_lbls, node_idx_train, node_idx_val, node_idx_test are only used for evaluation.
