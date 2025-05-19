@@ -723,8 +723,9 @@ def train_LFI(data, diag_fts):
 
 
 layers = ["GCN", "GAT", "SAGE"]
-methods = [feature_noise, node_noise]
-for dataset_name in ['cora', 'citeseer']:
+noisy_methods = [feature_noise]
+datasets = ['cora', 'citeseer']
+for dataset_name in datasets:
     adj, true_features, node_class_lbls, _, _, _ = new_load_data(dataset_name, norm_adj=False)
     pickle.dump(adj.to_dense().numpy(), open(os.path.join(os.getcwd(), 'features', method_name,
                                                           '{}_sp_adj.pkl'.format(args.dataset)), 'wb'))
@@ -915,7 +916,7 @@ for dataset_name in ['cora', 'citeseer']:
     pred_data = Data(true_features, adj, node_class_lbls, train_fts_idx, vali_fts_idx, test_fts_idx)
 
     os.makedirs(f"results/{dataset_name}", exist_ok=True)
-    pred_data, num_features, num_classes = get_data(dataset_name)
+    # pred_data, num_features, num_classes = get_data(dataset_name)
     for method in noisy_methods:
         print(method.__name__)
         results = []
