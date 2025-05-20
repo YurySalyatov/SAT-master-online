@@ -725,7 +725,7 @@ def train_LFI(data, diag_fts):
 
 layers = ["GCN", "GAT", "SAGE"]
 noisy_methods = [feature_noise]
-datasets = ['cora', 'citeseer']
+datasets = ['citeseer']
 for dataset_name in datasets:
     adj, true_features, node_class_lbls, _, _, _ = new_load_data(dataset_name, norm_adj=False)
     pickle.dump(adj.to_dense().numpy(), open(os.path.join(os.getcwd(), 'features', method_name,
