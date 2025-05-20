@@ -927,7 +927,7 @@ for dataset_name in datasets:
                 print(layer)
                 pu_arr = []
                 acc_arr = []
-                for _ in range(10):
+                for _ in range(5):
                     data = method(pred_data, sigma)
                     data.to(device)
 
