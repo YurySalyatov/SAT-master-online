@@ -730,7 +730,7 @@ def train_LFI(data, diag_fts):
 
 layers = ["GCN", "GAT", "SAGE"]
 noisy_methods = [feature_noise]
-datasets = ['citeseer']
+datasets = [args.dataset]
 for dataset_name in datasets:
     print(dataset_name)
     adj, true_features, node_class_lbls, _, _, _ = new_load_data(dataset_name, norm_adj=False)
