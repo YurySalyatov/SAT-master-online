@@ -219,6 +219,7 @@ def feature_noise(data, percentage):
 class GCN(torch.nn.Module):
     def __init__(self, num_features, num_classes, hidden_dim=16, dropout=0.5, layer_name="GCN", heads=4):
         super().__init__()
+        self.layer_name = layer_name
         if layer_name == "GCN":
             self.conv1 = GCNConv(num_features, hidden_dim)
             self.conv2 = GCNConv(hidden_dim, num_classes)
@@ -234,8 +235,12 @@ class GCN(torch.nn.Module):
 
     def forward(self, data):
         x, edge_index = data.x, data.edge_index
+        x = F.dropout(x, p=self.dropout, training=self.training)
         x = self.conv1(x, edge_index)
-        x = F.relu(x)
+        if self.layer_name == "GAT":
+            x = F.elu(x)
+        else:
+            x = F.relu(x)
         x = F.dropout(x, training=self.training, p=self.dropout)
         x = self.conv2(x, edge_index)
 
@@ -727,6 +732,7 @@ layers = ["GCN", "GAT", "SAGE"]
 noisy_methods = [feature_noise]
 datasets = ['citeseer']
 for dataset_name in datasets:
+    print(dataset_name)
     adj, true_features, node_class_lbls, _, _, _ = new_load_data(dataset_name, norm_adj=False)
     pickle.dump(adj.to_dense().numpy(), open(os.path.join(os.getcwd(), 'features', method_name,
                                                           '{}_sp_adj.pkl'.format(args.dataset)), 'wb'))
