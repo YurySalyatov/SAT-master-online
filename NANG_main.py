@@ -16,6 +16,7 @@ from torch_geometric.nn import GCNConv, SAGEConv, GATConv
 import torch.nn.functional as F
 
 import warnings
+
 warnings.filterwarnings('ignore', category=UserWarning)
 warnings.filterwarnings('ignore', category=FutureWarning)
 
@@ -140,7 +141,7 @@ def save_generative_fts(gene_fts, dataset_name):
 
 # if __name__ == "__main__":
 # Load data
-noise_levels = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
+noise_levels = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
 # print('loading dataset: {}'.format(args.dataset))
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -295,7 +296,7 @@ def save_table(results, filename="results_experiment1_table.txt"):
 #         plt.show()
 
 # Обучение модели
-def train_model(model, data, dataset_name, layer, epochs=10000, target_acc=0.8):
+def train_model(model, data, dataset_name, layer, epochs=4000, target_acc=0.8):
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=5e-4)
     model.train()
     loss_f = torch.nn.CrossEntropyLoss()
@@ -320,6 +321,7 @@ def train_model(model, data, dataset_name, layer, epochs=10000, target_acc=0.8):
     print(f"min loss: {min_loss:.4f}")
     print(f"max_acc: {max_acc}")
     return model, max_acc, min_loss
+
 
 # Вычисление энтропии
 def compute_entropy(log_probs):
@@ -948,7 +950,8 @@ for dataset_name in datasets:
                     data.x = torch.FloatTensor(new_gene_fts)
                     data.to(device)
 
-                    model, max_acc, _ = train_model(model, data, dataset_name, layer=layer)
+                    model, max_acc, _ = train_model(model, data, dataset_name, layer=layer,
+                                                    target_acc=0.5 + 0.25 * (1 - sigma))
                     model.load_state_dict(torch.load(f"output/best_GCN_model_{dataset_name}_{layer}.pkl"))
 
                     # Оценка PU
