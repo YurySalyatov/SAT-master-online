@@ -6,7 +6,7 @@ from torch import optim
 from VAE_models import VAE
 from sklearn.utils import shuffle
 import random
-from SmipleGNN.utils import new_load_data
+from utils import new_load_data
 import os
 import pickle
 import numpy as np

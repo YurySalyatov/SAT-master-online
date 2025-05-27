@@ -228,8 +228,8 @@ class GCN(torch.nn.Module):
             self.conv1 = GATConv(num_features, hidden_dim, heads=heads)
             self.conv2 = GATConv(hidden_dim * heads, num_classes)
         elif layer_name == "SAGE":
-            self.conv1 = SAGEConv(num_features, hidden_dim)
-            self.conv2 = SAGEConv(hidden_dim, num_classes)
+            self.conv1 = SAGEConv(num_features, hidden_dim, normalize=True)
+            self.conv2 = SAGEConv(hidden_dim, num_classes, normalize=True)
         else:
             raise Exception(f"Unknown layer name: {layer_name}, expected on of GCN, GAT, SAGE")
         self.dropout = dropout
@@ -296,7 +296,7 @@ def save_table(results, filename="results_experiment1_table.txt"):
 #         plt.show()
 
 # Обучение модели
-def train_model(model, data, dataset_name, layer, epochs=4000, target_acc=0.8):
+def train_model(model, data, dataset_name, layer, epochs=300, target_acc=0.6):
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=5e-4)
     model.train()
     loss_f = torch.nn.CrossEntropyLoss()
@@ -950,8 +950,7 @@ for dataset_name in datasets:
                     data.x = torch.FloatTensor(new_gene_fts)
                     data.to(device)
 
-                    model, max_acc, _ = train_model(model, data, dataset_name, layer=layer,
-                                                    target_acc=0.5 + 0.25 * (1 - sigma))
+                    model, max_acc, _ = train_model(model, data, dataset_name, layer=layer)
                     model.load_state_dict(torch.load(f"output/best_GCN_model_{dataset_name}_{layer}.pkl"))
 
                     # Оценка PU

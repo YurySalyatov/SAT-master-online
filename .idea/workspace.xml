@@ -5,7 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="789722af-f387-463a-82d0-9d67ba1bd174" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/NANG_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/NANG_main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/VAE_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/VAE_main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -126,7 +128,7 @@
       <workItem from="1747044715461" duration="94000" />
       <workItem from="1747044904358" duration="6166000" />
       <workItem from="1747232234355" duration="1859000" />
-      <workItem from="1747332001338" duration="8817000" />
+      <workItem from="1747332001338" duration="11286000" />
     </task>
     <servers />
   </component>
